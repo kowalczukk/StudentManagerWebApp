@@ -179,7 +179,6 @@ namespace StudentManagerWebApp
 
         protected void logoutButton_Click(object sender, EventArgs e)
         {
-            Session["Login"] = null;
             Session["ID"] = null;
             Session["Role"] = null;
             Server.Transfer("Login.aspx");

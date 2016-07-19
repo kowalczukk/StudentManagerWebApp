@@ -27,20 +27,19 @@ namespace StudentManagerWebApp
             {
                 if (loginBox.Text == u.Username && passwordBox.Text == u.Password)
                 {
-                    Session["Login"] = loginBox.Text;
                     Session["Role"] = u.Role;
                     Session["ID"] = u.Id;                  
                     break;
                 }                                
             }
 
-            if(Session["Login"] == null)
+            if(Session["Role"] == null)
             {
                 messageLabel.Visible = true;
                 loginBox.Text = "";
                 passwordBox.Text = "";
             }
-            else if(Session["Login"].ToString() == "student")
+            else if(Session["Role"].ToString() == "student")
             {
                 
                 Server.Transfer("StudentDetails.aspx");

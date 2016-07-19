@@ -219,9 +219,8 @@ namespace StudentManagerWebApp
 
         protected void returnButton_Click(object sender, EventArgs e)
         {
-            if(Session["Login"].ToString() == "student")
+            if(Session["Role"].ToString() == "student")
             {
-                Session["Login"] = null;
                 Session["ID"] = null;
                 Session["Role"] = null;
                 Server.Transfer("Login.aspx");
