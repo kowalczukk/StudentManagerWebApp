@@ -15,9 +15,9 @@ namespace StudentManagerWebApp
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            idBox.Text = Main.id.ToString();
+            idBox.Text = Session["ID"].ToString();
             GetStudent();
-            if(Login.person== "student")
+            if(Session["Role"].ToString() == "student")
             {
                 addMarkLabel.Visible = false;
                 addMarkButton.Visible = false;
@@ -78,7 +78,7 @@ namespace StudentManagerWebApp
                     using (SqlCommand cmd = new SqlCommand("[dbo].[LoadMarks]", con))
                     {
                         cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                        cmd.Parameters.Add(new SqlParameter("@studentid", Main.id));
+                        cmd.Parameters.Add(new SqlParameter("@studentid", Session["ID"].ToString()));
                         cmd.Parameters.Add(new SqlParameter("@subjectid", Convert.ToInt32(DropDownList.SelectedValue)));
                         SqlDataAdapter da = new SqlDataAdapter(cmd);
                         DataSet ds = new DataSet();
@@ -106,7 +106,6 @@ namespace StudentManagerWebApp
         public void GetStudent()
         {
             var connectionFromConfigarion = WebConfigurationManager.ConnectionStrings["DBConnection"];
-            //string sql = string.Format("Select FirstName, LastName From Students Where ID = {0}", Main.id);
             using (SqlConnection con = new SqlConnection(connectionFromConfigarion.ConnectionString))
             {
                 try
@@ -115,7 +114,7 @@ namespace StudentManagerWebApp
                     using (SqlCommand cmd = new SqlCommand("[dbo].[GetOneStudent]", con))
                     {
                         cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                        cmd.Parameters.Add(new SqlParameter("@id", Main.id));
+                        cmd.Parameters.Add(new SqlParameter("@id", Session["ID"].ToString()));
                         SqlDataReader dr = cmd.ExecuteReader();
                         while (dr.Read())
                         {
@@ -220,8 +219,11 @@ namespace StudentManagerWebApp
 
         protected void returnButton_Click(object sender, EventArgs e)
         {
-            if(Login.person == "student")
+            if(Session["Login"].ToString() == "student")
             {
+                Session["Login"] = null;
+                Session["ID"] = null;
+                Session["Role"] = null;
                 Server.Transfer("Login.aspx");
             }
             else
@@ -235,8 +237,7 @@ namespace StudentManagerWebApp
             {
                 try
                 {
-                    con.Open();
-                    //string sql = string.Format("Insert into Marks (ID, subjectID, studentID, TeacherID, number, whatFor) values ((select max(ID) from Marks)+1, '{0}', '{1}', 1, '{2}', '{3}')", DropDownList.SelectedValue, idBox.Text, numberBox.Text, typeBox.Text);
+                    con.Open();                    
                     SqlCommand cmd = new SqlCommand("[dbo].[AddMark]", con);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.Add(new SqlParameter("@subjectid", DropDownList.SelectedValue));

@@ -14,9 +14,6 @@ namespace StudentManagerWebApp
 
     public partial class Main : System.Web.UI.Page
     {
-        public static int id;
-        public static string firstname;
-        public static string lastname;
         SqlConnection con = new SqlConnection(WebConfigurationManager.ConnectionStrings["DBConnection"].ConnectionString);
 
         protected void Page_Load(object sender, EventArgs e)
@@ -28,20 +25,6 @@ namespace StudentManagerWebApp
 
         public void LoadStudents()
         {
-
-            //using (SqlConnection con = new SqlConnection(connectionFromConfigarion.ConnectionString))
-            //SqlCommand cmd = new SqlCommand("[dbo].[GetStudents]", con);
-            //cmd.CommandType = System.Data.CommandType.StoredProcedure;
-            ////connect(cmd);
-            //SqlDataAdapter da = new SqlDataAdapter(cmd);
-            //DataSet ds = new DataSet();
-            //da.Fill(ds);
-            //if (ds.Tables[0].Rows.Count > 0)
-            //{
-            //    dataGridView.DataSource = ds;
-            //    dataGridView.DataBind();
-            //}
-            //closeConnection();
             var connectionFromConfigarion = WebConfigurationManager.ConnectionStrings["DBConnection"];
             SqlConnection con = new SqlConnection(WebConfigurationManager.ConnectionStrings["DBConnection"].ConnectionString);
             using (con)
@@ -100,7 +83,6 @@ namespace StudentManagerWebApp
                 try
                 {
                     con.Open();
-                    //string sql = string.Format("UPDATE Students set LastName = '{0}', FirstName = '{1}' WHERE ID='{2}'", txtLastName.Text, txtFirstName.Text, hiddenId.Value);
                     SqlCommand cmd = new SqlCommand("[dbo].[UpdateStudent]", con);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.Add(new SqlParameter("@id", hiddenId.Value));
@@ -129,8 +111,7 @@ namespace StudentManagerWebApp
             {
                 try
                 {
-                    con.Open();
-                    //string sql = string.Format("Insert into Students (ID, LastName, FirstName) values ((select max(ID) from Students)+1, '{0}', '{1}')", lastNameBox.Text, firstNameBox.Text);
+                    con.Open();                    
                     SqlCommand cmd = new SqlCommand("[dbo].[AddStudent]", con);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.Add(new SqlParameter("@fn", firstNameBox.Text));
@@ -163,7 +144,6 @@ namespace StudentManagerWebApp
                 try
                 {
                     con.Open();
-                    //string sql = string.Format("Delete from Students Where ID = '{0}'", hiddenId.Value);
                     SqlCommand cmd = new SqlCommand("[dbo].[DeleteStudent]", con);
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
                     cmd.Parameters.Add(new SqlParameter("@id", hiddenId.Value));
@@ -191,7 +171,7 @@ namespace StudentManagerWebApp
                 int index = Convert.ToInt32(e.CommandArgument);
                 GridViewRow row = (GridViewRow)dataGridView.Rows[index];
                 HiddenField hiddenId = (HiddenField)row.FindControl("hiddenStudentID");
-                id = Convert.ToInt32(hiddenId.Value);           
+                Session["ID"] = hiddenId.Value;       
                 Server.Transfer("StudentDetails.aspx");
                 
             }
@@ -199,6 +179,9 @@ namespace StudentManagerWebApp
 
         protected void logoutButton_Click(object sender, EventArgs e)
         {
+            Session["Login"] = null;
+            Session["ID"] = null;
+            Session["Role"] = null;
             Server.Transfer("Login.aspx");
         }
 

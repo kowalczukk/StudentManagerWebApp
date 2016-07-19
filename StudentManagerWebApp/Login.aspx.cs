@@ -9,8 +9,8 @@ namespace StudentManagerWebApp
 {
     public partial class Login : System.Web.UI.Page
     {
-        public static string person = "error";
         List<user> Users = new List<user>();
+
         protected void Page_Load(object sender, EventArgs e)
         {
             Users.Add(new user("s1", "123", "student", 1));
@@ -27,19 +27,20 @@ namespace StudentManagerWebApp
             {
                 if (loginBox.Text == u.username && passwordBox.Text == u.password)
                 {
-                    person = u.who;
-                    Main.id = u.id;
+                    Session["Login"] = loginBox.Text;
+                    Session["Role"] = u.role;
+                    Session["ID"] = u.id;                  
                     break;
                 }                                
             }
 
-            if(person == "error")
+            if(Session["Login"] == null)
             {
                 messageLabel.Visible = true;
                 loginBox.Text = "";
                 passwordBox.Text = "";
             }
-            else if(person== "student")
+            else if(Session["Login"].ToString() == "student")
             {
                 
                 Server.Transfer("StudentDetails.aspx");
@@ -53,13 +54,13 @@ namespace StudentManagerWebApp
     {
         public string username;
         public string password;        
-        public string who;
+        public string role;
         public int id;
-        public user(string Username, string Password, string Who, int Id)
+        public user(string Username, string Password, string Role, int Id)
         {            
             username = Username;
             password = Password;
-            who = Who;
+            role = Role;
             id = Id;
         }
     }
