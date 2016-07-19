@@ -142,7 +142,6 @@
     <Compile Include="StudentDetails.aspx.designer.cs">
       <DependentUpon>StudentDetails.aspx</DependentUpon>
     </Compile>
-    <Compile Include="StudentStorage.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
